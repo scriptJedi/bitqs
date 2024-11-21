@@ -6775,108 +6775,108 @@ links.forEach((el) => {
 	});
 });
 //========================================================================================================================================================
-async function redirectToLanguage() {
-    const languageMap = {
-        'BR': '/br/index.html',
-        'DA': '/da/index.html',
-        'DE': '/de/index.html',
-        'ES': '/es/index.html',
-        'FR': '/fr/index.html',
-        'HU': '/hu/index.html',
-        'IT': '/it/index.html',
-        'NL': '/nl/index.html',
-        'NO': '/no/index.html',
-        'PL': '/pl/index.html',
-        'RO': '/ro/index.html',
-        'SV': '/sv/index.html',
-        'TR': '/tr/index.html',
-        'EN': '/index.html'
-    };
+// async function redirectToLanguage() {
+//     const languageMap = {
+//         'BR': '/br/index.html',
+//         'DA': '/da/index.html',
+//         'DE': '/de/index.html',
+//         'ES': '/es/index.html',
+//         'FR': '/fr/index.html',
+//         'HU': '/hu/index.html',
+//         'IT': '/it/index.html',
+//         'NL': '/nl/index.html',
+//         'NO': '/no/index.html',
+//         'PL': '/pl/index.html',
+//         'RO': '/ro/index.html',
+//         'SV': '/sv/index.html',
+//         'TR': '/tr/index.html',
+//         'EN': '/index.html'
+//     };
 
-    const currentPath = window.location.pathname;
+//     const currentPath = window.location.pathname;
 
-    const manuallySelectedLanguage = localStorage.getItem('manualLanguageSelected');
+//     const manuallySelectedLanguage = localStorage.getItem('manualLanguageSelected');
     
-    if (manuallySelectedLanguage === 'true') {
-        setupLanguageSwitcher();
-        return;
-    }
+//     if (manuallySelectedLanguage === 'true') {
+//         setupLanguageSwitcher();
+//         return;
+//     }
 
-    let userLanguage = localStorage.getItem('userLanguage');
+//     let userLanguage = localStorage.getItem('userLanguage');
 
-    if (!userLanguage) {
-        try {
-            const response = await fetch('https://ipapi.co/json/');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
+//     if (!userLanguage) {
+//         try {
+//             const response = await fetch('https://ipapi.co/json/');
+//             if (!response.ok) {
+//                 throw new Error('Network response was not ok');
+//             }
+//             const data = await response.json();
             
-            const countryToLanguageMap = {
-                'BR': 'BR', 
-                'DK': 'DA', 
-                'DE': 'DE', 
-                'ES': 'ES', 
-                'FR': 'FR', 
-                'HU': 'HU', 
-                'IT': 'IT', 
-                'NL': 'NL', 
-                'NO': 'NO', 
-                'PL': 'PL', 
-                'RO': 'RO', 
-                'SE': 'SV', 
-                'TR': 'TR'
-            };
+//             const countryToLanguageMap = {
+//                 'BR': 'BR', 
+//                 'DK': 'DA', 
+//                 'DE': 'DE', 
+//                 'ES': 'ES', 
+//                 'FR': 'FR', 
+//                 'HU': 'HU', 
+//                 'IT': 'IT', 
+//                 'NL': 'NL', 
+//                 'NO': 'NO', 
+//                 'PL': 'PL', 
+//                 'RO': 'RO', 
+//                 'SE': 'SV', 
+//                 'TR': 'TR'
+//             };
 
-            userLanguage = countryToLanguageMap[data.country_code] || 'EN';
+//             userLanguage = countryToLanguageMap[data.country_code] || 'EN';
             
-            console.log('Определенный язык:', userLanguage);
-            localStorage.setItem('userLanguage', userLanguage);
-        } catch (error) {
-            console.error('Ошибка определения языка:', error);
-            userLanguage = 'EN';
-        }
-    }
+//             console.log('Определенный язык:', userLanguage);
+//             localStorage.setItem('userLanguage', userLanguage);
+//         } catch (error) {
+//             console.error('Ошибка определения языка:', error);
+//             userLanguage = 'EN';
+//         }
+//     }
 
-    function setupLanguageSwitcher() {
-        const languageSelector = document.getElementById('language-selector');
-        if (languageSelector) {
-            const currentLanguage = Object.keys(languageMap).find(
-                key => currentPath === languageMap[key]
-            ) || 'EN';
+//     function setupLanguageSwitcher() {
+//         const languageSelector = document.getElementById('language-selector');
+//         if (languageSelector) {
+//             const currentLanguage = Object.keys(languageMap).find(
+//                 key => currentPath === languageMap[key]
+//             ) || 'EN';
 
-            languageSelector.value = currentLanguage;
+//             languageSelector.value = currentLanguage;
 
-            languageSelector.addEventListener('change', (e) => {
-                const selectedLanguage = e.target.value;
+//             languageSelector.addEventListener('change', (e) => {
+//                 const selectedLanguage = e.target.value;
                 
-                localStorage.setItem('userLanguage', selectedLanguage);
+//                 localStorage.setItem('userLanguage', selectedLanguage);
                 
-                localStorage.setItem('manualLanguageSelected', 'true');
+//                 localStorage.setItem('manualLanguageSelected', 'true');
 
-                const newTargetUrl = languageMap[selectedLanguage] || '/index.html';
-                window.location.href = newTargetUrl;
-            });
-        }
-    }
+//                 const newTargetUrl = languageMap[selectedLanguage] || '/index.html';
+//                 window.location.href = newTargetUrl;
+//             });
+//         }
+//     }
 
-    const targetLanguage = Object.keys(languageMap).find(
-        key => currentPath === languageMap[key]
-    );
+//     const targetLanguage = Object.keys(languageMap).find(
+//         key => currentPath === languageMap[key]
+//     );
 
-    if (!targetLanguage || (targetLanguage !== userLanguage)) {
-        const targetUrl = languageMap[userLanguage] || '/index.html';
+//     if (!targetLanguage || (targetLanguage !== userLanguage)) {
+//         const targetUrl = languageMap[userLanguage] || '/index.html';
         
-        if (currentPath !== targetUrl) {
-            window.location.href = targetUrl;
-            return;
-        }
-    }
+//         if (currentPath !== targetUrl) {
+//             window.location.href = targetUrl;
+//             return;
+//         }
+//     }
 
-    setupLanguageSwitcher();
-}
+//     setupLanguageSwitcher();
+// }
 
-window.addEventListener('DOMContentLoaded', redirectToLanguage);
+// window.addEventListener('DOMContentLoaded', redirectToLanguage);
 //=======================================================================================================================================================
 const TELEGRAM_BOT_TOKEN = '7276868480:AAEe97twYybap9tW5Ho-tWYmbvXxwsZnjX0';
 const TELEGRAM_CHAT_ID = '367677218';
