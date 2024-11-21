@@ -6803,8 +6803,6 @@ async function redirectToLanguage() {
 	  EN: "/index.html",
 	};
   
-	const currentPath = window.location.pathname;
-  
 	// Проверка, был ли язык уже выбран вручную
 	const manuallySelectedLanguage = localStorage.getItem("manualLanguageSelected");
 	if (manuallySelectedLanguage === "true") {
@@ -6822,7 +6820,7 @@ async function redirectToLanguage() {
 	  try {
 		const response = await fetch("https://ipapi.co/json/");
 		if (!response.ok) {
-		  throw new Error("Network response was не ok");
+		  throw new Error("Network response was not ok");
 		}
 		const data = await response.json();
   
@@ -6854,6 +6852,12 @@ async function redirectToLanguage() {
 	  return "EN";
 	}
   
+	// Проверка, была ли уже попытка перенаправления
+	if (sessionStorage.getItem('redirectAttempted')) {
+	  setupLanguageSwitcher();
+	  return;
+	}
+  
 	// Получение языка
 	const userLanguage = await determineUserLanguage();
 	localStorage.setItem("userLanguage", userLanguage);
@@ -6861,6 +6865,7 @@ async function redirectToLanguage() {
 	function setupLanguageSwitcher() {
 	  const languageSelector = document.getElementById("language-selector");
 	  if (languageSelector) {
+		const currentPath = window.location.pathname;
 		const currentLanguage =
 		  Object.keys(languageMap).find(
 			(key) => currentPath === languageMap[key]
@@ -6880,20 +6885,17 @@ async function redirectToLanguage() {
 	  }
 	}
   
-	// Определение текущего языка страницы
-	const currentLanguage =
-	  Object.keys(languageMap).find((key) => currentPath === languageMap[key]) ||
-	  "EN";
-  
-	// Проверка необходимости перенаправления
+	const currentPath = window.location.pathname;
 	const targetUrl = languageMap[userLanguage] || "/index.html";
-	
+  
 	console.log("Current Path:", currentPath);
 	console.log("Target URL:", targetUrl);
 	console.log("User Language:", userLanguage);
   
-	// Перенаправление, если текущий путь не соответствует определенному языку
+	// Перенаправление только если пути не совпадают
 	if (currentPath !== targetUrl) {
+	  // Отметка о попытке перенаправления
+	  sessionStorage.setItem('redirectAttempted', 'true');
 	  window.location.replace(targetUrl);
 	  return;
 	}
