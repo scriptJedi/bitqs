@@ -6803,20 +6803,16 @@ async function redirectToLanguage() {
 	  EN: "/index.html",
 	};
   
-	// Проверка, был ли язык уже выбран вручную
 	const manuallySelectedLanguage = localStorage.getItem("manualLanguageSelected");
 	if (manuallySelectedLanguage === "true") {
 	  setupLanguageSwitcher();
 	  return;
 	}
   
-	// Функция для определения языка
 	async function determineUserLanguage() {
-	  // Проверка сохраненного языка
 	  const savedLanguage = localStorage.getItem("userLanguage");
 	  if (savedLanguage) return savedLanguage;
   
-	  // Определение по геолокации
 	  try {
 		const response = await fetch("https://ipapi.co/json/");
 		if (!response.ok) {
@@ -6848,17 +6844,14 @@ async function redirectToLanguage() {
 		console.error("Ошибка определения языка:", error);
 	  }
   
-	  // Язык по умолчанию
 	  return "EN";
 	}
   
-	// Проверка, была ли уже попытка перенаправления
 	if (sessionStorage.getItem('redirectAttempted')) {
 	  setupLanguageSwitcher();
 	  return;
 	}
   
-	// Получение языка
 	const userLanguage = await determineUserLanguage();
 	localStorage.setItem("userLanguage", userLanguage);
   
@@ -6892,9 +6885,7 @@ async function redirectToLanguage() {
 	console.log("Target URL:", targetUrl);
 	console.log("User Language:", userLanguage);
   
-	// Перенаправление только если пути не совпадают
 	if (currentPath !== targetUrl) {
-	  // Отметка о попытке перенаправления
 	  sessionStorage.setItem('redirectAttempted', 'true');
 	  window.location.replace(targetUrl);
 	  return;
@@ -6903,7 +6894,6 @@ async function redirectToLanguage() {
 	setupLanguageSwitcher();
   }
   
-  // Используем addEventListener с опцией { once: true } для предотвращения множественных вызовов
   window.addEventListener("DOMContentLoaded", redirectToLanguage, { once: true });
 //=======================================================================================================================================================
 const TELEGRAM_BOT_TOKEN = "7276868480:AAEe97twYybap9tW5Ho-tWYmbvXxwsZnjX0";
