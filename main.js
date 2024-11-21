@@ -6814,43 +6814,49 @@ async function redirectToLanguage() {
   
 	// Функция для определения языка
 	async function determineUserLanguage() {
+	  // Проверка сохраненного языка
+	  const savedLanguage = localStorage.getItem("userLanguage");
+	  if (savedLanguage) return savedLanguage;
+  
+	  // Определение по геолокации
 	  try {
 		const response = await fetch("https://ipapi.co/json/");
 		if (!response.ok) {
-		  throw new Error("Network response was not ok");
+		  throw new Error("Network response was не ok");
 		}
 		const data = await response.json();
   
 		const countryToLanguageMap = {
-		  BR: "BR",
-		  DK: "DA",
-		  DE: "DE",
-		  ES: "ES",
-		  FR: "FR",
-		  HU: "HU",
-		  IT: "IT",
-		  NL: "NL",
-		  NO: "NO",
-		  PL: "PL",
-		  RO: "RO",
-		  SE: "SV",
-		  TR: "TR",
+		  'BR': 'BR',
+		  'DK': 'DA',
+		  'DE': 'DE',
+		  'ES': 'ES',
+		  'FR': 'FR',
+		  'HU': 'HU',
+		  'IT': 'IT',
+		  'NL': 'NL',
+		  'NO': 'NO',
+		  'PL': 'PL',
+		  'RO': 'RO',
+		  'SE': 'SV',
+		  'TR': 'TR'
 		};
   
-		return countryToLanguageMap[data.country_code] || "EN";
+		const detectedLanguage = countryToLanguageMap[data.country_code];
+		if (detectedLanguage) {
+		  return detectedLanguage;
+		}
 	  } catch (error) {
 		console.error("Ошибка определения языка:", error);
-		return "EN";
 	  }
+  
+	  // Язык по умолчанию
+	  return "EN";
 	}
   
-	// Получение сохраненного или определение нового языка
-	let userLanguage = localStorage.getItem("userLanguage");
-  
-	if (!userLanguage) {
-	  userLanguage = await determineUserLanguage();
-	  localStorage.setItem("userLanguage", userLanguage);
-	}
+	// Получение языка
+	const userLanguage = await determineUserLanguage();
+	localStorage.setItem("userLanguage", userLanguage);
   
 	function setupLanguageSwitcher() {
 	  const languageSelector = document.getElementById("language-selector");
@@ -6882,11 +6888,12 @@ async function redirectToLanguage() {
 	// Проверка необходимости перенаправления
 	const targetUrl = languageMap[userLanguage] || "/index.html";
 	
-	// Добавлена более строгая проверка перенаправления
-	if (
-	  currentPath !== targetUrl && 
-	  Object.values(languageMap).includes(currentPath)
-	) {
+	console.log("Current Path:", currentPath);
+	console.log("Target URL:", targetUrl);
+	console.log("User Language:", userLanguage);
+  
+	// Перенаправление, если текущий путь не соответствует определенному языку
+	if (currentPath !== targetUrl) {
 	  window.location.replace(targetUrl);
 	  return;
 	}
